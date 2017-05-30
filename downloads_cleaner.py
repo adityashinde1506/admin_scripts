@@ -10,7 +10,7 @@ LOGGING_FILE="/home/adityas/Logs/clearer.log"
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s - %(message)s",level=logging.DEBUG,filename=LOGGING_FILE)
 
-WATCH_DIRS=["/home/adityas/Downloads"]
+WATCH_DIRS=["/home/adityas/Downloads/"]
 STAGING="/home/adityas/Trash/"
 
 def get_filenames():
@@ -46,7 +46,6 @@ def move_to_staging(files):
     for _file in files:
         logging.info("Moving %s to staging area. File not used since %s days."%(_file))
         shutil.move(_file[0],STAGING)
-        break
 
 def main():
     logging.info("Starting cleaner.")
@@ -55,8 +54,11 @@ def main():
     files=get_filenames()
     stats=get_stats(files)
     deltas=compute_delta(stats)
-    old_files=queue_for_deletion(files,deltas)
-    move_to_staging(old_files)
+    old_files=list(queue_for_deletion(files,deltas))
+    if len(old_files) == 0:
+        logging.info("No files to be deleted.")
+    else:
+        move_to_staging(old_files)
     logging.info("Stopping cleaner.")
 
 main()
