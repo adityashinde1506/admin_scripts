@@ -3,7 +3,7 @@
 import os
 import shutil
 import logging
-
+import sys
 
 LOGGING_FILE="/home/adityas/Logs/clearer.log"
 
@@ -13,6 +13,9 @@ logging.info("Deleting trash.")
 ROOT_DIR="/home/adityas/Trash"
 logging
 files=os.listdir(ROOT_DIR)
+if len(files) ==0:
+    logging.info("Nothing to delete")
+    sys.exit()
 absolute_files=map(lambda x:ROOT_DIR+"/"+x,files)
 for _file in list(absolute_files):
     logging.info("Deleting %s"%(str(_file)))
