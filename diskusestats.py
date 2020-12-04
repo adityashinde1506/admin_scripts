@@ -40,5 +40,6 @@ def get_all_directories():
 
 def main():
     record=get_all_directories()
+    print(record)
 
 main()
