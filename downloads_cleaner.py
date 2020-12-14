@@ -44,21 +44,31 @@ def queue_for_deletion(files,deltas,threshold=60):
 
 def move_to_staging(files):
     for _file in files:
-        logging.info("Moving %s to staging area. File not used since %s days."%(_file))
-        shutil.move(_file[0],STAGING)
+        try:
+            logging.info("Moving %s to staging area. File not used since %s days."%(_file))
+            shutil.move(_file[0],STAGING)
+
+        except Exception as e:
+            logging.error(f"While moving {_file} to staging, {e}")
 
 def main():
+
     logging.info("Starting cleaner.")
+    
     for _dir in WATCH_DIRS:
         logging.info("Cleaning %s"%_dir)
+    
     files=get_filenames()
     stats=get_stats(files)
     deltas=compute_delta(stats)
+    
     old_files=list(queue_for_deletion(files,deltas))
+    
     if len(old_files) == 0:
         logging.info("No files to be deleted.")
     else:
         move_to_staging(old_files)
+    
     logging.info("Stopping cleaner.")
 
 main()
